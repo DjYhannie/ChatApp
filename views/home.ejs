@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Box</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+        integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+</head>
+<style>
+    body {
+        background-image: url("https://wallpaperaccess.com/full/307543.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .sidenav {
+        height: 95vh;
+        width: 20%;
+        margin-left: 4%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: rgb(39, 37, 37);
+        overflow-x: hidden;
+        padding: 1%;
+    }
+
+    .ml {
+        margin-left: 20%;
+    }
+
+    /* .bg {
+        background-color: #f8ceec;
+        background-image: linear-gradient(315deg, #f8ceec 0%, #a88beb 74%);
+    } */
+
+    .h {
+        height: 100%;
+    }
+
+    .mt {
+        margin-top: 20%;
+    }
+
+    .btn {
+        cursor: pointer;
+        /* padding: 5px 15px; */
+        background-color: #f8ceec;
+        background-image: linear-gradient(315deg, #f8ceec 0%, #a88beb 74%);
+        border: 0;
+        font-size: 17px;
+    }
+
+    .btn:hover {
+        background-color: #fce043;
+        background-image: linear-gradient(315deg, #fce043 0%, #fb7ba2 74%);
+    }
+
+    .h {
+        height: 10%;
+    }
+
+    .message-box {
+        height: 80vh;
+        overflow-y: scroll;
+        position: relative;
+    }
+
+    .inputMessage {
+        width: 800px;
+    }
+
+    #typing {
+        position: fixed;
+        top: 400px;
+        z-index: 2;
+        left: 45%;
+    }
+
+    .chat-message {
+        font-family: cursive;
+        background-color: rgba(81, 41, 97, 0.247);
+    }
+</style>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+           
+            <div class="col-sm-10 ml bg  float-right mt-3">
+                <nav class="navbar navbar-light bg-dark text-white">
+                    <span class="pb-1" id="usernameHome" name="<%= username %>">
+                        <i class="far fa-user-circle fa-2x p-2"></i>
+                        <%= username %>
+                    </span>
+                    <h2 class="font-weight-bold text-white text-center"><i class="fas fa-smile"></i>Chat Box</h2>
+                    <a href="#" class="btn" id="discon">Disconnect</a>
+                </nav>
+                
+                <div class="chat-message message-box" id="messages">
+                    <p id="typing" class="text-secondary"></p>
+                    <div class="sidenav mt-3 ">
+                        <div class="text-center">
+                            <h4 class="text-white"><i class="fas fa-users"></i> Users</h4>
+                            <hr class="bg-white">
+                            <ul id="activeList">
+                                <li class="text-white">Ardiente</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <form action="index.ejs" class="message-form">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <input type="text" class="form-control w-100" id="msg">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn w-100" id="send">Send</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+
+</html>
