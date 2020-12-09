@@ -78,7 +78,7 @@ $(document).ready(function() {
  */
 function displayJoinedChat(username) {
     $("#messages").append(
-        `<p class="text-center text-primary"><small >${username} joined the chat</small></p>`
+        `<p class="text-center text-warning"><medium >${username} joined the chat</medium></p>`
     );
 }
 

@@ -78,15 +78,22 @@
     }
 
     #typing {
+        color: #fb7ba2;
         position: fixed;
-        top: 400px;
+        top: 88%;
         z-index: 2;
-        left: 45%;
+        left: 25%;
     }
 
     .chat-message {
         font-family: cursive;
-        background-color: rgba(81, 41, 97, 0.247);
+        background-color: rgba(81, 41, 97, 0.315);
+    }
+    .text-sky{
+        color: #0aeff7;
+    }
+    li{
+        list-style: none;
     }
 </style>
 
@@ -97,7 +104,7 @@
            
             <div class="col-sm-10 ml bg  float-right mt-3">
                 <nav class="navbar navbar-light bg-dark text-white">
-                    <span class="pb-1" id="usernameHome" name="<%= username %>">
+                    <span class="pb-1 text-sky" id="usernameHome" name="<%= username %>">
                         <i class="far fa-user-circle fa-2x p-2"></i>
                         <%= username %>
                     </span>
@@ -106,7 +113,7 @@
                 </nav>
                 
                 <div class="chat-message message-box" id="messages">
-                    <p id="typing" class="text-secondary"></p>
+                    <p id="typing"></p>
                     <div class="sidenav mt-3 ">
                         <div class="text-center">
                             <h4 class="text-white"><i class="fas fa-users"></i> Users</h4>
@@ -121,10 +128,10 @@
                     <form action="index.ejs" class="message-form">
                         <div class="row">
                             <div class="col-md-10">
-                                <input type="text" class="form-control w-100" id="msg">
+                                <input type="text" class="form-control w-100 inputText" id="msg">
                             </div>
                             <div class="col-md-2">
-                                <button class="btn w-100" id="send">Send</button>
+                                <button class="btn w-100" id="send"><i class="fas fa-paper-plane"></i>&nbsp;Send</button>
                             </div>
                         </div>
                     </form>
