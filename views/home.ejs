@@ -89,10 +89,12 @@
         font-family: cursive;
         background-color: rgba(81, 41, 97, 0.315);
     }
-    .text-sky{
+
+    .text-sky {
         color: #0aeff7;
     }
-    li{
+
+    li {
         list-style: none;
     }
 </style>
@@ -101,7 +103,7 @@
 
     <div class="container">
         <div class="row">
-           
+
             <div class="col-sm-10 ml bg  float-right mt-3">
                 <nav class="navbar navbar-light bg-dark text-white">
                     <span class="pb-1 text-sky" id="usernameHome" name="<%= username %>">
@@ -111,16 +113,14 @@
                     <h2 class="font-weight-bold text-white text-center"><i class="fas fa-smile"></i>Chat Box</h2>
                     <a href="#" class="btn" id="discon">Disconnect</a>
                 </nav>
-                
+
                 <div class="chat-message message-box" id="messages">
                     <p id="typing"></p>
                     <div class="sidenav mt-3 ">
                         <div class="text-center">
                             <h4 class="text-white"><i class="fas fa-users"></i> Users</h4>
                             <hr class="bg-white">
-                            <ul id="activeList">
-                                <li class="text-white">Ardiente</li>
-                            </ul>
+                            <ul id="activeList"></ul>
                         </div>
                     </div>
                 </div>
@@ -131,7 +131,8 @@
                                 <input type="text" class="form-control w-100 inputText" id="msg">
                             </div>
                             <div class="col-md-2">
-                                <button class="btn w-100" id="send"><i class="fas fa-paper-plane"></i>&nbsp;Send</button>
+                                <button class="btn w-100" id="send"><i
+                                        class="fas fa-paper-plane"></i>&nbsp;Send</button>
                             </div>
                         </div>
                     </form>
@@ -141,6 +142,130 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            var socket = io();
+            socket.on('checkactiveUser', (activeUsers) => {
+                // console.log(activeUsers)
+                $(activeList).empty()
+                for (let user of activeUsers) {
+                    $('#activeList').append(`<li class="text-white">${user.username}</li>`)
+                }
+            })
+
+            if ($("#usernameHome").attr("name")) {
+                console.log(socket.id)
+                let user = $("#usernameHome").attr("name");
+
+                socket.emit('join', user);
+                displayJoinedChat("you");
+
+                socket.on('join', (msg) => {
+                    //append the user joined  
+                    displayJoinedChat(msg);
+                })
+
+                //detect when the a user is typing
+                $("body").on('input', "#msg", () => {
+                    user = $("#usernameHome").attr("name");
+                    socket.emit('typing', user);
+                })
+
+                //send the message 
+                $("#send").click((e) => {
+                    let user = $("#usernameHome").attr("name");
+                    e.preventDefault();
+                    let message = $("#msg").val();
+                    socket.emit('message', { username: user, message: message });
+                    appendMessage(`${message}`, { direction: "right", color: "primary" });
+                    $("#msg").val("");
+                });
+
+                //recieve the emited message form the other users
+                socket.on('message', (msg) => {
+                    appendMessage(`${msg.username} : ${msg.message}`, { direction: "left", color: "success" });
+                    clearTyping();
+                })
+
+                //on typing 
+                socket.on('typing', (msg) => {
+                    showTyping(msg);
+                })
+
+                //disconnect
+                socket.on('disconnection', (msg) => {
+                    disConnect(msg);
+
+                })
+            }
+
+            $("#discon").click(async (e) => {
+                e.preventDefault();
+                var socket = io();
+                let user = $("#usernameHome").attr("name");
+                await socket.emit('disconnection', user);
+                let counter = 0;
+                const test = setInterval(() => {
+                    if (counter > 0) {
+                        window.location.href = '/';
+                        clearInterval(test);
+                    }
+                    counter++;
+
+                }, 1000)
+            });
+
+
+        });
+
+
+        /**
+ * Display 
+ * @param {*} username 
+ */
+        function displayJoinedChat(username) {
+            $("#messages").append(
+                `<p class="text-center text-warning"><medium >${username} joined the chat</medium></p>`
+            );
+        }
+
+        /**
+         * Show if a user is typing
+         * @param {*} username 
+         */
+        function showTyping(username) {
+            $("#typing").text(`${username} is typing`);
+        }
+
+        function clearTyping() {
+            $("#typing").text("");
+        }
+
+        /**
+         * Append the message
+         * @param {*} message 
+         * @param {*} socket 
+         */
+        function appendMessage(message, data) {
+            $("#messages").append(
+                `<div class="mt-2 mx-1"><br><p class="text-${data.direction}"><span class="p-2 bg-${data.color}">${message}</p></span></div>`
+            )
+        }
+
+      
+
+        /**
+         * Disconnect
+         */
+        function disConnect(username) {
+            $("#messages").append(
+                `<p class="text-center text-secondary"><small >${username} has disconnected</small></p>`
+            );
+        }
+
+    </script>
     <script src="/static/js/main.js"></script>
 </body>
 
