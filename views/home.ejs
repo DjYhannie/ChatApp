@@ -21,8 +21,8 @@
 
     .sidenav {
         height: 95vh;
-        width: 20%;
-        margin-left: 4%;
+        width: 18%;
+        margin-left: 5%;
         position: fixed;
         z-index: 1;
         top: 0;
@@ -97,6 +97,18 @@
     li {
         list-style: none;
     }
+
+    .disconText {
+        color: #b4064f;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .activeList {
+        color: #e70aa5;
+        font-size: 20px;
+        margin-right: 6%;
+    }
 </style>
 
 <body>
@@ -151,7 +163,7 @@
                 // console.log(activeUsers)
                 $(activeList).empty()
                 for (let user of activeUsers) {
-                    $('#activeList').append(`<li class="text-white">${user.username}</li>`)
+                    $('#activeList').append(`<li class="activeList"><i class="fas fa-user-circle"></i>&nbsp;${user.username}</li>`)
                 }
             })
 
@@ -178,14 +190,15 @@
                     let user = $("#usernameHome").attr("name");
                     e.preventDefault();
                     let message = $("#msg").val();
-                    socket.emit('message', { username: user, message: message });
-                    appendMessage(`${message}`, { direction: "right", color: "primary" });
+                    socket.emit('message', { username: user, message: message,date:getDate(new Date),time:formatAMPM(new Date) });
+                    appendMessage(`${message}`, { direction: "right", color: "primary" },getDate(new Date),formatAMPM(new Date));
                     $("#msg").val("");
                 });
 
                 //recieve the emited message form the other users
                 socket.on('message', (msg) => {
-                    appendMessage(`${msg.username} : ${msg.message}`, { direction: "left", color: "success" });
+                    console.log(msg)
+                    appendMessage(`${msg.username} : ${msg.message}`, { direction: "left", color: "success" },msg.date,msg.time);
                     clearTyping();
                 })
 
@@ -203,7 +216,6 @@
 
             $("#discon").click(async (e) => {
                 e.preventDefault();
-                var socket = io();
                 let user = $("#usernameHome").attr("name");
                 await socket.emit('disconnection', user);
                 let counter = 0;
@@ -225,6 +237,7 @@
  * Display 
  * @param {*} username 
  */
+
         function displayJoinedChat(username) {
             $("#messages").append(
                 `<p class="text-center text-warning"><medium >${username} joined the chat</medium></p>`
@@ -248,22 +261,50 @@
          * @param {*} message 
          * @param {*} socket 
          */
-        function appendMessage(message, data) {
+        function appendMessage(message, data,date,time) { 
             $("#messages").append(
-                `<div class="mt-2 mx-1"><br><p class="text-${data.direction}"><span class="p-2 bg-${data.color}">${message}</p></span></div>`
+                `<div class="mt-2 mx-1"><p class="text-${data.direction}"><span class="p-2 bg-${data.color}">${message}</span><br><span style = "font-size:10px;color:white">${date} ${time}<span></p></div>`
             )
         }
 
-      
+
 
         /**
          * Disconnect
          */
         function disConnect(username) {
             $("#messages").append(
-                `<p class="text-center text-secondary"><small >${username} has disconnected</small></p>`
+                `<p class="text-center disconText"><small >${username} has disconnected</small></p>`
             );
         }
+
+        /*
+        * Time format
+        */
+
+        function formatAMPM(time) {
+            var hours = time.getHours();
+            var minutes = time.getMinutes();
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            var strTime = hours + ':' + minutes + ' ' + ampm;
+            return strTime;
+        }
+
+        function getDate(date){
+            var year = date.getFullYear()
+            var month = date.getMonth()
+            var date = date.getDate()
+            return year+"-"+month+"-"+date
+        }
+
+        /*
+        *Date format
+        */
+
+        
 
     </script>
     <script src="/static/js/main.js"></script>
